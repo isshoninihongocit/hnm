@@ -774,6 +774,703 @@
 // // Export the registration page directly (no authentication guard)
 // export default RegistrationPage;
 
+// "use client";
+// import { useState, useEffect } from "react";
+// import { motion } from "framer-motion";
+// import { CheckCircle2, Loader2 } from "lucide-react";
+// import { toast } from "sonner";
+// import { useAuth } from "../context/AuthContext";
+//
+// type Pass = {
+//   index: number;
+//   name: string;
+//   price: string;
+//   priceValue: number;
+//   description: string;
+//   features: string[];
+//   button: string;
+//   link: string;
+//   passType: string;
+// };
+//
+// type PurchasedPlan = {
+//   planName: string;
+//   planType: string;
+//   planPrice: number;
+//   purchaseDate: string;
+//   paymentId: string;
+// };
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://hnm2-be.vercel.app';
+// const passes: Record<string, Pass[]> = {
+//   "Day 1": [
+//     {
+//       index: 0,
+//       name: "GENERAL",
+//       price: "₹100",
+//       priceValue: 100,
+//       description:
+//         "The General Pass gives you access to the heart of Hikari no Matsuri! Join us for two days of anime quizzes, ninja runs, art, and cultural exchange perfect for all Japanese culture enthusiasts.",
+//       features: [
+//         "ONE PIECE TREASURE HUNT – Find the One Piece",
+//         "O-Talku Zone! – Talk and Interact Area",
+//         "Hanetsuki ",
+//         "Musical Performance – Notes of Nippon",
+//         "Artist Alley ",
+//         "Digital Certificate of Participation",
+//       ],
+//       button: "BUY NOW",
+//       link: "https://rzp.io/rzp/hnmgeneral",
+//       passType: "general_day1"
+//     },
+//     {
+//       index: 1,
+//       name: "PREMIUM",
+//       price: "₹125",
+//       priceValue: 125,
+//       description:
+//         "Unlock the full experience of Hikari no Matsuri with our Premium Pass. Exclusive workshops, VIP access, and special merch. For the true Nihon enthusiast!",
+//       features: [
+//         "All General Pass Events",
+//         "ANIFLIX LOUNGE",
+//         "NIHON DIVE",
+//         "COSPLAY CONTEST",
+//         "NIHON TRIVIA",
+//         "MANGAMIND",
+//         "VIP Seat Access for Cultural Shows & Performances",
+//         "SPEECH CONTEST",
+//         "Digital Certificate of Premium Participation",
+//       ],
+//       button: "BUY NOW",
+//       link: "https://rzp.io/rzp/hnmpremium",
+//       passType: "premium_day1"
+//     },
+//     {
+//       index: 2,
+//       name: "WORKSHOPS & ADD-ONS",
+//       price: "₹200",
+//       priceValue: 200,
+//       description:
+//         "Enhance your Hikari no Matsuri experience by enrolling in our exclusive workshops. Hands-on learning and cultural immersion from professionals.",
+//       features: [
+//         "Includes General + Premium Pass Features + all workshops",
+//         "Kendo Workshop (Day 2 Only)",
+//         "Origami & Japanese Crafts",
+//         "Japanese Calligraphy (Shodō)",
+//         "Participation Certificate(Digital) for Each Workshop",
+//         "Expert-led Sessions",
+//         "Materials Provided On-site",
+//         "Limited Slots Available per Workshop",
+//       ],
+//       button: "BUY NOW ",
+//       link: "https://rzp.io/l/hnmworkshop",
+//       passType: "workshop_day1"
+//     },
+//   ],
+//   "Day 2": [
+//     {
+//       index: 0,
+//       name: "GENERAL",
+//       price: "₹100",
+//       priceValue: 100,
+//       description:
+//         "Same General benefits carry over with focus on quizzes, performances, and artist showcases for Day 2.",
+//       features: [
+//  "ONE PIECE TREASURE HUNT – Find the One Piece",
+//         "O-Talku Zone! – Talk and Interact Area",
+//         "Hanetsuki ",
+//         "Musical Performance – Notes of Nippon",
+//         "Artist Alley ",
+//         "Digital Certificate of Participation",
+//       ],
+//       button: "BUY NOW",
+//       link: "https://rzp.io/rzp/hnmgeneral",
+//       passType: "general_day2"
+//     },
+//     {
+//       index: 1,
+//       name: "PREMIUM",
+//       price: "₹125",
+//       priceValue: 125,
+//       description:
+//         "Full access to Day 2 events plus exclusive cultural perks and workshops.",
+//       features: [
+//         "All General Pass Events + fun events",
+//         "ANIFLIX LOUNGE",
+//         "NIHON DIVE",
+//         "COSPLAY CONTEST",
+//         "NIHON TRIVIA",
+//         "MANGAMIND",
+//         "VIP Seat Access for Cultural Shows & Performances",
+//         "SPEECH CONTEST",
+//         "Digital Certificate of Premium Participation",
+//       ],
+//       button: "BUY NOW",
+//       link: "https://rzp.io/rzp/hnmpremium",
+//       passType: "premium_day2"
+//     },
+//     {
+//       index: 2,
+//       name: "WORKSHOPS & ADD-ONS",
+//       price: "₹200",
+//       priceValue: 200,
+//       description:
+//         "Cultural depth and skill-building through immersive workshops with limited access.",
+//       features: [
+//
+//         "Includes General + Premium Pass Features + all workshops",
+//         "Kendo Workshop (Day 2 Only)",
+//         "Origami & Japanese Crafts",
+//         "Japanese Calligraphy (Shodō)",
+//         "Participation Certificate(Digital) for Each Workshop",
+//         "Expert-led Sessions",
+//         "Materials Provided On-site",
+//         "Limited Slots Available per Workshop",
+//       ],
+//       button: "BUY NOW ",
+//       link: "https://rzp.io/l/hnmworkshop",
+//       passType: "workshop_day2"
+//     },
+//   ],
+//
+//   Combo: [
+//     {
+//       index: 0,
+//       name: "GENERAL",
+//       price: "₹150",
+//       priceValue: 150,
+//       description:
+//         "Get both days of General Pass benefits with a combo discount! Perfect for the full Hikari no Matsuri experience.",
+//       features: [
+//         "All Day 1 & Day 2 General Events + Few Fun Events",
+//         "Akihabara no Quest – Anime Quiz",
+//         "O-Talku Zone!",
+//         "Musical Performance – Notes of Nippon",
+//         "Artist Alley",
+//         "Digital Certificate of Participation",
+//         "Save ₹50 with Combo Pricing!",
+//       ],
+//       button: "BUY NOW",
+//       link: "https://rzp.io/rzp/generalcombo",
+//       passType: "general_combo"
+//     },
+//     {
+//       index: 1,
+//       name: "PREMIUM",
+//       price: "₹175",
+//       priceValue: 175,
+//       description:
+//         "Complete Premium experience for both days with exclusive perks and workshops.",
+//       features: [
+//         "All General Combo Benefits + Premium Events",
+//         "ANIFLIX LOUNGE",
+//         "NIHON DIVE",
+//         "COSPLAY CONTEST",
+//         "NIHON TRIVIA",
+//         "MANGAMIND",
+//         "VIP Seat Access for Cultural Shows & Performances",
+//         "SPEECH CONTEST",
+//         "Save ₹75 with Combo Pricing!",
+//       ],
+//       button: "BUY NOW",
+//       link: "https://rzp.io/rzp/hnmpremiumcombo",
+//       passType: "premium_combo"
+//     },
+//   ],
+// };
+//
+// export default function Registration() {
+//   const { user } = useAuth(); // Get authenticated user
+//   const [day, setDay] = useState<"Day 1" | "Day 2" | "Combo">("Combo");
+//   const [loadingPassIndex, setLoadingPassIndex] = useState<number | null>(null);
+//   const [userEmail, setUserEmail] = useState("");
+//   const [userName, setUserName] = useState("");
+//   const [showUserForm, setShowUserForm] = useState(false);
+//   const [selectedPass, setSelectedPass] = useState<Pass | null>(null);
+//   const [purchasedPlans, setPurchasedPlans] = useState<PurchasedPlan[]>([]);
+//   const [purchasesLoaded, setPurchasesLoaded] = useState(false);
+//
+//   // Check if user info is available from auth context or localStorage
+//   useEffect(() => {
+//     console.log('🔄 User state changed:', { 
+//       userEmail: user?.email, 
+//       userUsername: user?.username,
+//       hasUser: !!user 
+//     });
+//
+//     // Reset state first
+//     setPurchasesLoaded(false);
+//     setPurchasedPlans([]);
+//     
+//     // Priority 1: Use authenticated user from AuthContext
+//     if (user?.email) {
+//       console.log('🔐 Using authenticated user:', user.email);
+//       setUserEmail(user.email);
+//       setUserName(user.username || "");
+//       // Load purchased plans for authenticated user
+//       setTimeout(() => loadPurchasedPlans(user.email), 100);
+//       return;
+//     }
+//     
+//     // If no authenticated user, clear all user data and reset localStorage
+//     console.log('🧹 No authenticated user - clearing user data');
+//     setUserEmail("");
+//     setUserName("");
+//     
+//     // Clear localStorage when no user is authenticated
+//     localStorage.removeItem("userEmail");
+//     localStorage.removeItem("userName");
+//     localStorage.removeItem("registrationIntentId");
+//     
+//   }, [user]); // Re-run when user changes
+//
+//   // Additional effect to check for payment completion and refresh data
+//   useEffect(() => {
+//     const checkPaymentCompletion = async () => {
+//       // Check if user just returned from payment (URL params or localStorage indicators)
+//       const urlParams = new URLSearchParams(window.location.search);
+//       const paymentSuccess = urlParams.get('payment') === 'success';
+//       const registrationIntentId = localStorage.getItem("registrationIntentId");
+//       
+//       if (paymentSuccess || registrationIntentId) {
+//         console.log('🔄 Payment completion detected, refreshing purchased plans...');
+//         
+//         // Clear the intent ID to avoid repeated refreshes
+//         if (registrationIntentId) {
+//           localStorage.removeItem("registrationIntentId");
+//         }
+//         
+//         // Refresh purchased plans only for authenticated users
+//         if (user?.email) {
+//           console.log('🔄 Refreshing purchased plans for:', user.email);
+//           await loadPurchasedPlans(user.email);
+//           
+//           // Show success message
+//           if (paymentSuccess) {
+//             toast.success("Payment completed successfully! Your pass has been activated.");
+//           }
+//         }
+//       }
+//     };
+//
+//     // Run check after component mounts
+//     const timer = setTimeout(checkPaymentCompletion, 1000);
+//     
+//     // Also set up a periodic refresh every 30 seconds to catch any webhook delays
+//     // Only for authenticated users
+//     const refreshInterval = setInterval(() => {
+//       if (user?.email && document.visibilityState === 'visible') {
+//         console.log('🔄 Periodic refresh of purchase data...');
+//         loadPurchasedPlans(user.email, 0);
+//       }
+//     }, 30000);
+//     
+//     return () => {
+//       clearTimeout(timer);
+//       clearInterval(refreshInterval);
+//     };
+//   }, [user?.email]); // Re-run when email changes
+//
+//   // Function to manually refresh purchased plans (for testing)
+//   const refreshPurchasedPlans = async () => {
+//     // Only use authenticated user email, not localStorage
+//     const currentEmail = user?.email;
+//     
+//     if (currentEmail) {
+//       console.log('🔄 Manual refresh of purchased plans for:', currentEmail);
+//       setPurchasesLoaded(false);
+//       setPurchasedPlans([]);
+//       await loadPurchasedPlans(currentEmail);
+//       toast.success("Purchased plans refreshed!");
+//     } else {
+//       toast.error("Please login first to view your purchased plans.");
+//     }
+//   };
+//
+//   // Function to load purchased plans
+//   const loadPurchasedPlans = async (email: string, retryCount = 0) => {
+//     try {
+//       console.log(`🔄 Loading purchased plans for ${email} (attempt ${retryCount + 1})`);
+//       
+//       // Add cache busting timestamp - only use URL parameter, no headers
+//       const cacheBuster = Date.now();
+//       const response = await fetch(`${API_BASE_URL}/payments/purchased-plans/${encodeURIComponent(email)}?t=${cacheBuster}`, {
+//         method: 'GET',
+//         headers: {
+//           'Content-Type': 'application/json'
+//         }
+//       });
+//       
+//       if (response.ok) {
+//         const data = await response.json();
+//         console.log('✅ Raw API response:', data);
+//         
+//         const plans = data.purchasedPlans || [];
+//         setPurchasedPlans(plans);
+//         
+//         console.log('✅ Loaded purchased plans:', plans);
+//         
+//         // Log each plan for debugging
+//         plans.forEach((plan: PurchasedPlan, idx: number) => {
+//           console.log(`   Plan ${idx + 1}:`, {
+//             name: plan.planName,
+//             type: plan.planType,
+//             price: plan.planPrice
+//           });
+//         });
+//         
+//       } else {
+//         console.log('ℹ️ No purchased plans found or API error:', response.status);
+//         setPurchasedPlans([]);
+//         
+//         // Retry once if it's the first attempt and we get a server error
+//         if (retryCount === 0 && response.status >= 500) {
+//           console.log('🔄 Retrying due to server error...');
+//           setTimeout(() => loadPurchasedPlans(email, retryCount + 1), 1000);
+//           return;
+//         }
+//       }
+//     } catch (error) {
+//       console.error('❌ Error loading purchased plans:', error);
+//       setPurchasedPlans([]);
+//       
+//       // Retry once if it's the first attempt
+//       if (retryCount === 0) {
+//         console.log('🔄 Retrying due to network error...');
+//         setTimeout(() => loadPurchasedPlans(email, retryCount + 1), 1000);
+//         return;
+//       }
+//     } finally {
+//       setPurchasesLoaded(true);
+//     }
+//   };
+//
+//   // Check if a pass is already purchased
+//   const isPurchased = (pass: Pass): boolean => {
+//     // Only check for authenticated users
+//     if (!user?.email || !purchasesLoaded) {
+//       console.log('🔍 isPurchased check failed:', { 
+//         userEmail: !!user?.email, 
+//         purchasesLoaded 
+//       });
+//       return false;
+//     }
+//     
+//     const isMatch = purchasedPlans.some(plan => {
+//       const nameMatch = plan.planName === pass.name;
+//       const typeMatch = plan.planType === pass.passType;
+//       console.log('🔍 Checking purchase match:', {
+//         currentEmail: user.email,
+//         passName: pass.name,
+//         passType: pass.passType,
+//         planName: plan.planName,
+//         planType: plan.planType,
+//         nameMatch,
+//         typeMatch,
+//         overallMatch: nameMatch && typeMatch
+//       });
+//       return nameMatch && typeMatch;
+//     });
+//     
+//     console.log('🔍 Final isPurchased result:', { passName: pass.name, passType: pass.passType, isMatch });
+//     return isMatch;
+//   };
+//
+//   // Get purchase details for a pass
+//   const getPurchaseDetails = (pass: Pass): PurchasedPlan | null => {
+//     return purchasedPlans.find(plan => 
+//       plan.planName === pass.name && plan.planType === pass.passType
+//     ) || null;
+//   };
+//
+//   const handlePassPurchase = async (pass: Pass) => {
+//     // Require authentication for purchases
+//     if (!user?.email) {
+//       toast.error("Please login first to purchase passes.", {
+//         description: "You need to be authenticated to make a purchase."
+//       });
+//       return;
+//     }
+//
+//     // Check if pass is already purchased
+//     if (isPurchased(pass)) {
+//       const purchaseDetails = getPurchaseDetails(pass);
+//       toast.success(`You already purchased ${pass.name}!`, {
+//         description: purchaseDetails 
+//           ? `Purchased on ${new Date(purchaseDetails.purchaseDate).toLocaleDateString()}`
+//           : 'This pass is already in your collection.'
+//       });
+//       return;
+//     }
+//
+//     // Use authenticated user info
+//     const currentUserEmail = user.email;
+//     const currentUserName = user.username || user.email.split('@')[0];
+//
+//     await initiatePayment(pass, currentUserEmail, currentUserName);
+//   };
+//
+//   const initiatePayment = async (pass: Pass, email?: string, name?: string) => {
+//     setLoadingPassIndex(pass.index);
+//     
+//     // Use provided email/name or fall back to state
+//     const finalEmail = email || userEmail;
+//     const finalName = name || userName;
+//     
+//     if (!finalEmail || !finalName) {
+//       toast.error("Email and name are required for payment");
+//       setLoadingPassIndex(null);
+//       return;
+//     }
+//     
+//     try {
+//       // Store user info in localStorage
+//       localStorage.setItem("userEmail", finalEmail);
+//       localStorage.setItem("userName", finalName);
+//
+//       // Create registration intent
+//       const intentResponse = await fetch(`${API_BASE_URL}/payments/create-registration-intent`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           passType: pass.passType,
+//           passName: pass.name,
+//           passPrice: pass.priceValue,
+//           userEmail: finalEmail,
+//           userName: finalName,
+//           additionalData: {
+//             daySelected: day,
+//             passFeatures: pass.features,
+//             passDescription: pass.description
+//           }
+//         }),
+//       });
+//
+//       if (!intentResponse.ok) {
+//         throw new Error('Failed to create registration intent');
+//       }
+//
+//       const intentData = await intentResponse.json();
+//       
+//       // Store intent ID in localStorage for post-payment tracking
+//       localStorage.setItem("registrationIntentId", intentData.intentId);
+//
+//       toast.success("Registration intent created! Redirecting to payment...");
+//
+//       // Small delay for user feedback, then redirect to payment page
+//       setTimeout(() => {
+//         window.open(pass.link, '_blank');
+//       }, 1000);
+//
+//     } catch (error) {
+//       console.error('Error initiating payment:', error);
+//       toast.error("Failed to initiate payment. Please try again.");
+//     } finally {
+//       setLoadingPassIndex(null);
+//     }
+//   };
+//
+//   const handleUserFormSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     if (userEmail && userName && selectedPass) {
+//       setShowUserForm(false);
+//       initiatePayment(selectedPass, userEmail, userName);
+//     }
+//   };
+//
+//   return (
+//     <div className="bg-black text-white px-6 py-10 font-sans min-h-screen">
+//       <h1 className="text-center text-4xl md:text-5xl font-bold font-hnm text-red-600 mb-10 tracking-wider">
+//         CHOOSE YOUR PLAN
+//       </h1>
+//
+//       {/* Debug/Status Section - Only show for authenticated users */}
+//       {user?.email && (
+//         <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-700 max-w-4xl mx-auto">
+//           <div className="flex justify-between items-center mb-2">
+//             <h3 className="text-lg font-bold text-green-400">User Status</h3>
+//           </div>
+//           <div className="grid grid-cols-2 gap-4 text-sm">
+//             <div>
+//               <p className="text-gray-300">
+//                 Auth Status: <span className="text-green-400">Authenticated</span>
+//               </p>
+//               <p className="text-gray-300">Email: <span className="text-white">{user.email}</span></p>
+//               <p className="text-gray-300">Name: <span className="text-white">{user.username || 'Not set'}</span></p>
+//             </div>
+//             <div>
+//               <p className="text-gray-300">
+//                 Plans Loaded: <span className={purchasesLoaded ? 'text-green-400' : 'text-yellow-400'}>
+//                   {purchasesLoaded ? 'Yes' : 'Loading...'}
+//                 </span>
+//                 {!purchasesLoaded && <span className="ml-2 text-xs">(This may take a moment)</span>}
+//               </p>
+//               <p className="text-gray-300">Purchased: <span className="text-white">{purchasedPlans.length} plans</span></p>
+//             </div>
+//           </div>
+//           {purchasedPlans.length > 0 && (
+//             <div className="mt-2 pt-2 border-t border-gray-700">
+//               <p className="text-sm text-gray-300">Your Plans:</p>
+//               <div className="flex flex-wrap gap-2 mt-1">
+//                 {purchasedPlans.map((plan, idx) => (
+//                   <span key={idx} className="px-2 py-1 bg-green-800 text-green-100 rounded text-xs">
+//                     {plan.planName} ({plan.planType})
+//                   </span>
+//                 ))}
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       )}
+//
+//       {/* Login prompt for non-authenticated users */}
+//       {!user?.email && (
+//         <div className="mb-6 p-4 bg-yellow-900 border border-yellow-600 rounded-lg max-w-4xl mx-auto">
+//           <h3 className="text-lg font-bold text-yellow-200 mb-2">Authentication Required</h3>
+//           <p className="text-yellow-100">
+//             Please <a href="/login" className="text-yellow-200 underline hover:text-yellow-100">login</a> to view your purchased passes and make new purchases.
+//           </p>
+//         </div>
+//       )}
+//
+//       {/* User Info Form Modal */}
+//       {showUserForm && (
+//         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+//           <div className="bg-gray-900 p-6 rounded-lg max-w-md w-full mx-4">
+//             <h2 className="text-2xl font-bold text-red-600 mb-4">Complete Your Registration</h2>
+//             <p className="text-gray-300 mb-4">Please provide your details to continue with the purchase:</p>
+//             
+//             <form onSubmit={handleUserFormSubmit}>
+//               <div className="mb-4">
+//                 <label className="block text-gray-300 mb-2">Full Name *</label>
+//                 <input
+//                   type="text"
+//                   value={userName}
+//                   onChange={(e) => setUserName(e.target.value)}
+//                   className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:border-red-600 outline-none"
+//                   required
+//                 />
+//               </div>
+//               
+//               <div className="mb-4">
+//                 <label className="block text-gray-300 mb-2">Email Address *</label>
+//                 <input
+//                   type="email"
+//                   value={userEmail}
+//                   onChange={(e) => setUserEmail(e.target.value)}
+//                   className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:border-red-600 outline-none"
+//                   required
+//                 />
+//               </div>
+//               
+//               <div className="flex gap-3">
+//                 <button
+//                   type="button"
+//                   onClick={() => setShowUserForm(false)}
+//                   className="flex-1 py-2 px-4 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
+//                 >
+//                   Cancel
+//                 </button>
+//                 <button
+//                   type="submit"
+//                   className="flex-1 py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition"
+//                 >
+//                   Continue to Payment
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//
+//       {/* Day Toggle Buttons */}
+//       <div className="flex justify-center mb-10 gap-4">
+//         {["Day 1", "Day 2", "Combo"].map((d) => (
+//           <button
+//             key={d}
+//             onClick={() => setDay(d as "Day 1" | "Day 2" | "Combo")}
+//             className={`px-6 py-2 rounded-full border-2 font-semibold ${
+//               day === d
+//                 ? "bg-red-600 text-white border-red-600"
+//                 : "text-gray-300 border-gray-600 hover:bg-gray-800"
+//             }`}
+//           >
+//             {d}
+//           </button>
+//         ))}
+//       </div>
+//
+//       {/* Pass Cards */}
+//       <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+//         {passes[day].map((pass) => (
+//           <motion.div
+//             key={`${day}-${pass.index}`}
+//             whileHover={{ scale: 1.02 }}
+//             className="border border-gray-500 rounded-3xl p-6 flex flex-col justify-between bg-[#111111]"
+//           >
+//             <div>
+//               <h2 className="text-2xl font-bold text-red-600 mb-2 uppercase tracking-wider">
+//                 {pass.name}
+//               </h2>
+//               <p className="text-lg font-semibold mb-4">{pass.price}</p>
+//               <p className="text-sm text-gray-300 mb-5">{pass.description}</p>
+//               <ul className="space-y-2 text-sm text-green-400">
+//                 {pass.features.map((feature, idx) => (
+//                   <li key={idx} className="flex items-start gap-2">
+//                     <CheckCircle2 size={16} className="mt-[2px]" />
+//                     <span>{feature}</span>
+//                   </li>
+//                 ))}
+//               </ul>
+//             </div>
+//             
+//             <button
+//               onClick={() => handlePassPurchase(pass)}
+//               disabled={loadingPassIndex === pass.index || isPurchased(pass)}
+//               className={`mt-6 w-full py-2 rounded-full text-center font-bold transition flex items-center justify-center ${
+//                 isPurchased(pass)
+//                   ? "bg-green-500 text-white cursor-not-allowed"
+//                   : loadingPassIndex === pass.index
+//                   ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+//                   : pass.button === "BUY NOW"
+//                   ? "bg-gradient-to-r from-green-400 to-blue-500 text-black hover:from-green-500 hover:to-blue-600"
+//                   : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+//               }`}
+//             >
+//               {isPurchased(pass) ? (
+//                 <>
+//                   <CheckCircle2 size={16} className="mr-2" />
+//                   Already Purchased
+//                 </>
+//               ) : loadingPassIndex === pass.index ? (
+//                 <>
+//                   <Loader2 size={16} className="animate-spin mr-2" />
+//                   Processing...
+//                 </>
+//               ) : (
+//                 pass.button
+//               )}
+//             </button>
+//           </motion.div>
+//         ))}
+//       </div>
+//
+//       {/* Info Section */}
+//       <div className="mt-12 text-center text-gray-400">
+//         <p className="mb-2">
+//           After clicking "BUY NOW", you'll be redirected to a secure Razorpay payment page.
+//         </p>
+//         <p className="text-sm">
+//           Your registration will be automatically confirmed once payment is completed.
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -800,8 +1497,11 @@ type PurchasedPlan = {
   purchaseDate: string;
   paymentId: string;
 };
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://hnm2-be.vercel.app';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://hnm2-be.vercel.app";
+
 const passes: Record<string, Pass[]> = {
+
   "Day 1": [
     {
       index: 0,
@@ -977,423 +1677,120 @@ const passes: Record<string, Pass[]> = {
     },
   ],
 };
-
 export default function Registration() {
-  const { user } = useAuth(); // Get authenticated user
+  const { user } = useAuth();
   const [day, setDay] = useState<"Day 1" | "Day 2" | "Combo">("Combo");
   const [loadingPassIndex, setLoadingPassIndex] = useState<number | null>(null);
-  const [userEmail, setUserEmail] = useState("");
-  const [userName, setUserName] = useState("");
-  const [showUserForm, setShowUserForm] = useState(false);
-  const [selectedPass, setSelectedPass] = useState<Pass | null>(null);
   const [purchasedPlans, setPurchasedPlans] = useState<PurchasedPlan[]>([]);
   const [purchasesLoaded, setPurchasesLoaded] = useState(false);
 
-  // Check if user info is available from auth context or localStorage
   useEffect(() => {
-    console.log('🔄 User state changed:', { 
-      userEmail: user?.email, 
-      userUsername: user?.username,
-      hasUser: !!user 
-    });
-
-    // Reset state first
-    setPurchasesLoaded(false);
-    setPurchasedPlans([]);
-    
-    // Priority 1: Use authenticated user from AuthContext
     if (user?.email) {
-      console.log('🔐 Using authenticated user:', user.email);
-      setUserEmail(user.email);
-      setUserName(user.username || "");
-      // Load purchased plans for authenticated user
-      setTimeout(() => loadPurchasedPlans(user.email), 100);
-      return;
-    }
-    
-    // If no authenticated user, clear all user data and reset localStorage
-    console.log('🧹 No authenticated user - clearing user data');
-    setUserEmail("");
-    setUserName("");
-    
-    // Clear localStorage when no user is authenticated
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("registrationIntentId");
-    
-  }, [user]); // Re-run when user changes
-
-  // Additional effect to check for payment completion and refresh data
-  useEffect(() => {
-    const checkPaymentCompletion = async () => {
-      // Check if user just returned from payment (URL params or localStorage indicators)
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentSuccess = urlParams.get('payment') === 'success';
-      const registrationIntentId = localStorage.getItem("registrationIntentId");
-      
-      if (paymentSuccess || registrationIntentId) {
-        console.log('🔄 Payment completion detected, refreshing purchased plans...');
-        
-        // Clear the intent ID to avoid repeated refreshes
-        if (registrationIntentId) {
-          localStorage.removeItem("registrationIntentId");
-        }
-        
-        // Refresh purchased plans only for authenticated users
-        if (user?.email) {
-          console.log('🔄 Refreshing purchased plans for:', user.email);
-          await loadPurchasedPlans(user.email);
-          
-          // Show success message
-          if (paymentSuccess) {
-            toast.success("Payment completed successfully! Your pass has been activated.");
-          }
-        }
-      }
-    };
-
-    // Run check after component mounts
-    const timer = setTimeout(checkPaymentCompletion, 1000);
-    
-    // Also set up a periodic refresh every 30 seconds to catch any webhook delays
-    // Only for authenticated users
-    const refreshInterval = setInterval(() => {
-      if (user?.email && document.visibilityState === 'visible') {
-        console.log('🔄 Periodic refresh of purchase data...');
-        loadPurchasedPlans(user.email, 0);
-      }
-    }, 30000);
-    
-    return () => {
-      clearTimeout(timer);
-      clearInterval(refreshInterval);
-    };
-  }, [user?.email]); // Re-run when email changes
-
-  // Function to manually refresh purchased plans (for testing)
-  const refreshPurchasedPlans = async () => {
-    // Only use authenticated user email, not localStorage
-    const currentEmail = user?.email;
-    
-    if (currentEmail) {
-      console.log('🔄 Manual refresh of purchased plans for:', currentEmail);
-      setPurchasesLoaded(false);
-      setPurchasedPlans([]);
-      await loadPurchasedPlans(currentEmail);
-      toast.success("Purchased plans refreshed!");
+      loadPurchasedPlans(user.email);
     } else {
-      toast.error("Please login first to view your purchased plans.");
+      setPurchasedPlans([]);
+      setPurchasesLoaded(true);
     }
-  };
+  }, [user]);
 
-  // Function to load purchased plans
-  const loadPurchasedPlans = async (email: string, retryCount = 0) => {
+  const loadPurchasedPlans = async (email: string) => {
     try {
-      console.log(`🔄 Loading purchased plans for ${email} (attempt ${retryCount + 1})`);
-      
-      // Add cache busting timestamp - only use URL parameter, no headers
-      const cacheBuster = Date.now();
-      const response = await fetch(`${API_BASE_URL}/payments/purchased-plans/${encodeURIComponent(email)}?t=${cacheBuster}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
+      setPurchasesLoaded(false);
+      const response = await fetch(`${API_BASE_URL}/payments/purchased-plans/${encodeURIComponent(email)}`);
       if (response.ok) {
         const data = await response.json();
-        console.log('✅ Raw API response:', data);
-        
-        const plans = data.purchasedPlans || [];
-        setPurchasedPlans(plans);
-        
-        console.log('✅ Loaded purchased plans:', plans);
-        
-        // Log each plan for debugging
-        plans.forEach((plan: PurchasedPlan, idx: number) => {
-          console.log(`   Plan ${idx + 1}:`, {
-            name: plan.planName,
-            type: plan.planType,
-            price: plan.planPrice
-          });
-        });
-        
+        setPurchasedPlans(data.purchasedPlans || []);
       } else {
-        console.log('ℹ️ No purchased plans found or API error:', response.status);
         setPurchasedPlans([]);
-        
-        // Retry once if it's the first attempt and we get a server error
-        if (retryCount === 0 && response.status >= 500) {
-          console.log('🔄 Retrying due to server error...');
-          setTimeout(() => loadPurchasedPlans(email, retryCount + 1), 1000);
-          return;
-        }
       }
-    } catch (error) {
-      console.error('❌ Error loading purchased plans:', error);
+    } catch {
       setPurchasedPlans([]);
-      
-      // Retry once if it's the first attempt
-      if (retryCount === 0) {
-        console.log('🔄 Retrying due to network error...');
-        setTimeout(() => loadPurchasedPlans(email, retryCount + 1), 1000);
-        return;
-      }
     } finally {
       setPurchasesLoaded(true);
     }
   };
 
-  // Check if a pass is already purchased
   const isPurchased = (pass: Pass): boolean => {
-    // Only check for authenticated users
-    if (!user?.email || !purchasesLoaded) {
-      console.log('🔍 isPurchased check failed:', { 
-        userEmail: !!user?.email, 
-        purchasesLoaded 
-      });
-      return false;
-    }
-    
-    const isMatch = purchasedPlans.some(plan => {
-      const nameMatch = plan.planName === pass.name;
-      const typeMatch = plan.planType === pass.passType;
-      console.log('🔍 Checking purchase match:', {
-        currentEmail: user.email,
-        passName: pass.name,
-        passType: pass.passType,
-        planName: plan.planName,
-        planType: plan.planType,
-        nameMatch,
-        typeMatch,
-        overallMatch: nameMatch && typeMatch
-      });
-      return nameMatch && typeMatch;
-    });
-    
-    console.log('🔍 Final isPurchased result:', { passName: pass.name, passType: pass.passType, isMatch });
-    return isMatch;
+    if (!user?.email || !purchasesLoaded) return false;
+    return purchasedPlans.some(
+      (plan) => plan.planName === pass.name && plan.planType === pass.passType
+    );
   };
 
-  // Get purchase details for a pass
   const getPurchaseDetails = (pass: Pass): PurchasedPlan | null => {
-    return purchasedPlans.find(plan => 
-      plan.planName === pass.name && plan.planType === pass.passType
+    return purchasedPlans.find(
+      (plan) => plan.planName === pass.name && plan.planType === pass.passType
     ) || null;
   };
 
   const handlePassPurchase = async (pass: Pass) => {
-    // Require authentication for purchases
     if (!user?.email) {
-      toast.error("Please login first to purchase passes.", {
-        description: "You need to be authenticated to make a purchase."
-      });
+      toast.error("Please login first to purchase passes.");
       return;
     }
 
-    // Check if pass is already purchased
     if (isPurchased(pass)) {
       const purchaseDetails = getPurchaseDetails(pass);
-      toast.success(`You already purchased ${pass.name}!`, {
-        description: purchaseDetails 
+      toast.success(`You already purchased ${pass.name}`, {
+        description: purchaseDetails
           ? `Purchased on ${new Date(purchaseDetails.purchaseDate).toLocaleDateString()}`
-          : 'This pass is already in your collection.'
+          : "",
       });
       return;
     }
 
-    // Use authenticated user info
-    const currentUserEmail = user.email;
-    const currentUserName = user.username || user.email.split('@')[0];
-
-    await initiatePayment(pass, currentUserEmail, currentUserName);
+    await initiatePayment(pass, user.email, user.username || user.email.split("@")[0]);
   };
 
-  const initiatePayment = async (pass: Pass, email?: string, name?: string) => {
+  const initiatePayment = async (pass: Pass, email: string, name: string) => {
     setLoadingPassIndex(pass.index);
-    
-    // Use provided email/name or fall back to state
-    const finalEmail = email || userEmail;
-    const finalName = name || userName;
-    
-    if (!finalEmail || !finalName) {
-      toast.error("Email and name are required for payment");
-      setLoadingPassIndex(null);
-      return;
-    }
-    
     try {
-      // Store user info in localStorage
-      localStorage.setItem("userEmail", finalEmail);
-      localStorage.setItem("userName", finalName);
-
-      // Create registration intent
       const intentResponse = await fetch(`${API_BASE_URL}/payments/create-registration-intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           passType: pass.passType,
           passName: pass.name,
           passPrice: pass.priceValue,
-          userEmail: finalEmail,
-          userName: finalName,
-          additionalData: {
-            daySelected: day,
-            passFeatures: pass.features,
-            passDescription: pass.description
-          }
+          userEmail: email,
+          userName: name,
         }),
       });
 
-      if (!intentResponse.ok) {
-        throw new Error('Failed to create registration intent');
-      }
+      if (!intentResponse.ok) throw new Error("Failed to create registration intent");
 
-      const intentData = await intentResponse.json();
-      
-      // Store intent ID in localStorage for post-payment tracking
-      localStorage.setItem("registrationIntentId", intentData.intentId);
+      toast.success("Redirecting to payment...");
+      window.open(pass.link, "_blank");
 
-      toast.success("Registration intent created! Redirecting to payment...");
-
-      // Small delay for user feedback, then redirect to payment page
-      setTimeout(() => {
-        window.open(pass.link, '_blank');
-      }, 1000);
-
+      // after payment -> recheck purchased plans
+      await loadPurchasedPlans(email);
     } catch (error) {
-      console.error('Error initiating payment:', error);
       toast.error("Failed to initiate payment. Please try again.");
     } finally {
       setLoadingPassIndex(null);
     }
   };
 
-  const handleUserFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userEmail && userName && selectedPass) {
-      setShowUserForm(false);
-      initiatePayment(selectedPass, userEmail, userName);
-    }
-  };
-
   return (
-    <div className="bg-black text-white px-6 py-10 font-sans min-h-screen">
-      <h1 className="text-center text-4xl md:text-5xl font-bold font-hnm text-red-600 mb-10 tracking-wider">
-        CHOOSE YOUR PLAN
-      </h1>
+    <div className="bg-black text-white px-6 py-10 min-h-screen">
+      <h1 className="text-center text-4xl font-bold text-red-600 mb-10">CHOOSE YOUR PLAN</h1>
 
-      {/* Debug/Status Section - Only show for authenticated users */}
-      {user?.email && (
-        <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-700 max-w-4xl mx-auto">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-bold text-green-400">User Status</h3>
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-gray-300">
-                Auth Status: <span className="text-green-400">Authenticated</span>
-              </p>
-              <p className="text-gray-300">Email: <span className="text-white">{user.email}</span></p>
-              <p className="text-gray-300">Name: <span className="text-white">{user.username || 'Not set'}</span></p>
-            </div>
-            <div>
-              <p className="text-gray-300">
-                Plans Loaded: <span className={purchasesLoaded ? 'text-green-400' : 'text-yellow-400'}>
-                  {purchasesLoaded ? 'Yes' : 'Loading...'}
-                </span>
-                {!purchasesLoaded && <span className="ml-2 text-xs">(This may take a moment)</span>}
-              </p>
-              <p className="text-gray-300">Purchased: <span className="text-white">{purchasedPlans.length} plans</span></p>
-            </div>
-          </div>
-          {purchasedPlans.length > 0 && (
-            <div className="mt-2 pt-2 border-t border-gray-700">
-              <p className="text-sm text-gray-300">Your Plans:</p>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {purchasedPlans.map((plan, idx) => (
-                  <span key={idx} className="px-2 py-1 bg-green-800 text-green-100 rounded text-xs">
-                    {plan.planName} ({plan.planType})
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Login prompt for non-authenticated users */}
       {!user?.email && (
         <div className="mb-6 p-4 bg-yellow-900 border border-yellow-600 rounded-lg max-w-4xl mx-auto">
           <h3 className="text-lg font-bold text-yellow-200 mb-2">Authentication Required</h3>
           <p className="text-yellow-100">
-            Please <a href="/login" className="text-yellow-200 underline hover:text-yellow-100">login</a> to view your purchased passes and make new purchases.
+            Please <a href="/login" className="underline">login</a> to purchase passes.
           </p>
         </div>
       )}
 
-      {/* User Info Form Modal */}
-      {showUserForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-gray-900 p-6 rounded-lg max-w-md w-full mx-4">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">Complete Your Registration</h2>
-            <p className="text-gray-300 mb-4">Please provide your details to continue with the purchase:</p>
-            
-            <form onSubmit={handleUserFormSubmit}>
-              <div className="mb-4">
-                <label className="block text-gray-300 mb-2">Full Name *</label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:border-red-600 outline-none"
-                  required
-                />
-              </div>
-              
-              <div className="mb-4">
-                <label className="block text-gray-300 mb-2">Email Address *</label>
-                <input
-                  type="email"
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600 focus:border-red-600 outline-none"
-                  required
-                />
-              </div>
-              
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowUserForm(false)}
-                  className="flex-1 py-2 px-4 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                >
-                  Continue to Payment
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Day Toggle Buttons */}
       <div className="flex justify-center mb-10 gap-4">
         {["Day 1", "Day 2", "Combo"].map((d) => (
           <button
             key={d}
             onClick={() => setDay(d as "Day 1" | "Day 2" | "Combo")}
             className={`px-6 py-2 rounded-full border-2 font-semibold ${
-              day === d
-                ? "bg-red-600 text-white border-red-600"
-                : "text-gray-300 border-gray-600 hover:bg-gray-800"
+              day === d ? "bg-red-600 text-white border-red-600" : "text-gray-300 border-gray-600 hover:bg-gray-800"
             }`}
           >
             {d}
@@ -1401,69 +1798,30 @@ export default function Registration() {
         ))}
       </div>
 
-      {/* Pass Cards */}
       <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
         {passes[day].map((pass) => (
-          <motion.div
-            key={`${day}-${pass.index}`}
-            whileHover={{ scale: 1.02 }}
-            className="border border-gray-500 rounded-3xl p-6 flex flex-col justify-between bg-[#111111]"
-          >
+          <motion.div key={`${day}-${pass.index}`} whileHover={{ scale: 1.02 }} className="border border-gray-500 rounded-3xl p-6 flex flex-col justify-between bg-[#111111]">
             <div>
-              <h2 className="text-2xl font-bold text-red-600 mb-2 uppercase tracking-wider">
-                {pass.name}
-              </h2>
+              <h2 className="text-2xl font-bold text-red-600 mb-2">{pass.name}</h2>
               <p className="text-lg font-semibold mb-4">{pass.price}</p>
               <p className="text-sm text-gray-300 mb-5">{pass.description}</p>
               <ul className="space-y-2 text-sm text-green-400">
-                {pass.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <CheckCircle2 size={16} className="mt-[2px]" />
-                    <span>{feature}</span>
-                  </li>
+                {pass.features.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2"><CheckCircle2 size={16} /><span>{f}</span></li>
                 ))}
               </ul>
             </div>
-            
             <button
               onClick={() => handlePassPurchase(pass)}
               disabled={loadingPassIndex === pass.index || isPurchased(pass)}
-              className={`mt-6 w-full py-2 rounded-full text-center font-bold transition flex items-center justify-center ${
-                isPurchased(pass)
-                  ? "bg-green-500 text-white cursor-not-allowed"
-                  : loadingPassIndex === pass.index
-                  ? "bg-gray-600 text-gray-300 cursor-not-allowed"
-                  : pass.button === "BUY NOW"
-                  ? "bg-gradient-to-r from-green-400 to-blue-500 text-black hover:from-green-500 hover:to-blue-600"
-                  : "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+              className={`mt-6 w-full py-2 rounded-full font-bold flex items-center justify-center ${
+                isPurchased(pass) ? "bg-green-500" : loadingPassIndex === pass.index ? "bg-gray-600" : "bg-gradient-to-r from-green-400 to-blue-500"
               }`}
             >
-              {isPurchased(pass) ? (
-                <>
-                  <CheckCircle2 size={16} className="mr-2" />
-                  Already Purchased
-                </>
-              ) : loadingPassIndex === pass.index ? (
-                <>
-                  <Loader2 size={16} className="animate-spin mr-2" />
-                  Processing...
-                </>
-              ) : (
-                pass.button
-              )}
+              {isPurchased(pass) ? "Already Purchased" : loadingPassIndex === pass.index ? "Processing..." : pass.button}
             </button>
           </motion.div>
         ))}
-      </div>
-
-      {/* Info Section */}
-      <div className="mt-12 text-center text-gray-400">
-        <p className="mb-2">
-          After clicking "BUY NOW", you'll be redirected to a secure Razorpay payment page.
-        </p>
-        <p className="text-sm">
-          Your registration will be automatically confirmed once payment is completed.
-        </p>
       </div>
     </div>
   );
